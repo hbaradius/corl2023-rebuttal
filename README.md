@@ -5,7 +5,7 @@ Thank you for acknowledging the strengths of our work. We address your comments 
 
 **C1:** ***"While the author considers operating within a latent space as a primary contribution of the paper (contribution 2), it is hard to claim so. Arguably, every neural network model, whether it is an expansion from a low to high dimensional space or a compression from high to low dimensional space, works with a latent space and the use of neural networks to model nonlinear relationships is not unique to this work."***
 
-**A1:** Admittedly, yes, using latent representation is a common tactic in representation learning. As we mentioned in the related work, latent representation is usually learned via end-to-end policy training. But we do not see many applications perform bayesian filtering over the latent state, which we claim as the advantage over others.  
+**A1:** We agree with the reviewer and will revise the text. Using latent representation is a common tactic in representation learning. Our original intention was to highlight that our approach performs -Bayesian filtering- over a learned latent representation. Still, we agree with the reviewer that this aspect is best explained in the main body and not made a contribution. Will revise!
 
 **C2:** ***Additional information can be provided especially when $f_{\theta}$ takes in not only a sequence of previous states but also an optional action***
 
@@ -17,7 +17,7 @@ Thank you for acknowledging the strengths of our work. We address your comments 
 
 **C4:** ***In the attention gain module, a matrix $\tilde{M}$ is introduced to retain only the diagonal elements of the attention map in support of the argument that "within each latent vector, every index is probabilistically independent, and index i of a latent state should only consider index i of each latent observation". Is there any evidence or prior works to support this claim?***
 
-**A4:** Yes. We appreciate the reviewer for proposing this question. In turn, we conducted one additional training,, where we do not apply any masking on the $\tilde{M}$ matrix. As shown in table XXX, The resulting performance is worse than our proposed method. Specifically, the MAE for joints increased from 5.24° to 16.25°. Moreover, the MAE for tracking the end effector also deteriorated from 3.04cm to 6.23cm. Based on these results, it is strongly recommended to utilize the causality-enforced map $\tilde{M}$ within the attention gain module for improved performance.
+**A4:** We thank the reviewer for this excellent point. We conducted an empirical investigation of this hypothesis wherein we do not apply any masking on the $\tilde{M}$ matrix during training. As shown in table XXX, there is a clear and substantial deterioration in performance proposed method. Specifically, the MAE for joints increased from 5.24° to 16.25°. Moreover, the MAE for tracking the end effector also deteriorated from 3.04cm to 6.23cm. 
 
 **C5:** ***The claim that "can be disabled based on different input sensor modalities, thus improving the model's resilience to missing modalities" also seem unconvincing as it is difficult to relate how the removal of makes the model resilient to missing modalities.***
 
