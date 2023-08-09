@@ -13,7 +13,7 @@ Thank you for acknowledging the strengths of our work. We address your comments 
 
 **C3:** ***For the loss $L_S$, is such a loss possible? For example, in the multimodal manipulation task when $y^4$ is the force/torque sensor reading. Does the observation necessarily contain sufficient information to derive ground-truth state?***
 
-**A3:** The latent representation for $y^4$ is learned via end-to-end training, since $y^4$ does not include the joint state of the robot and the object, we therefore didn't place condition on its latent representation.
+**A3:** The latent representation for $y^4$ is learned via end-to-end training, since $y^4$ does not include the joint state of the robot and the object, we therefore did not place a condition on its latent representation.
 
 **C4:** ***In the attention gain module, a matrix $\tilde{M}$ is introduced to retain only the diagonal elements of the attention map in support of the argument that "within each latent vector, every index is probabilistically independent, and index i of a latent state should only consider index i of each latent observation". Is there any evidence or prior works to support this claim?***
 
@@ -22,6 +22,8 @@ Thank you for acknowledging the strengths of our work. We address your comments 
 **C5:** ***The claim that "can be disabled based on different input sensor modalities, thus improving the model's resilience to missing modalities" also seem unconvincing as it is difficult to relate how the removal of makes the model resilient to missing modalities.***
 
 **A5:** By disabling $\tilde{M}$, we selectively input some of the modalities to the model for training. This is similar to the training of Masked Language Models or Masked AutoEncoders: By training with missing inputs, the model tries to capture the joint distribution between each input part. Therefore, during inference time with missing modalities, the model has seen similar input distributions, thus it's able to perform more robustly.
+
+[TODO add citation to Masked Autoencoders]
 
 **C6:** ***Does $\alpha$-MDF only consider the RGB modality when compared with baselines dEFK and DPF in the estimation of the end-effector positions? It seems that only the RGB modality is used for dEKF since the DF baselines only take one modality as stated and the experiment (Table 1) does not consider sensor fusion techniques.***
 
@@ -33,7 +35,7 @@ Thank you for your valuable feedback! Below, we address your comments and questi
 
 **C1:** ***"The proposed method seems heavily relying on vision sensors. From the ablation study, the IMU doesn’t seem to add much value to the system."***
 
-**A1:** Yes, IMU contains certain noise when enough vision data available especially for this case, the end-effector motion can be easily captured via depth and RGB. However, if we change the robot state into estimation the internal forces/acceleration of joints, then IMUs will be more reflective for such cases.
+**A1:** Yes, IMU contains certain noise when enough vision data is available especially for this case, the end-effector motion can be easily captured via depth and RGB. However, if we change the robot state into estimation the internal forces/acceleration of joints, then IMUs will be more reflective for such cases.
 
 **C2:** ***"The organization of the paper can be improved. Currently, it’s a bit difficult to get a sense of the experimental setup without heavily referring to the appendix."***
 
@@ -49,11 +51,13 @@ Thank you for your valuable feedback! Below, we address your comments and questi
 
 **C5:** ***"I might have missed something, but for the manipulation task, why do joint angles need to be estimated as a state? Especially the joint angle measurements are used as an input to the network. The encoder measurements are usually fairly accurate already. I’m confused about why this is needed. In addition to the above point, the end-effector position can be computed through the forward kinematics function, although the kinematic modeling can sometimes be inaccurate. I wonder how the performance of the proposed method compares to pure forward kinematics."***
 
-**A5:** In the appendix, we mentioned the joint angle are recorded with noise, therefore, only reading the joint angles from the robot is not enough for estimation the state, and the forward kinematics will be inaccuate due to the accumulation of the errors. 
+**A5:** In the appendix, we mentioned the joint angle are recorded with noise - this simulated a number of possible noise sources in the real world. It is important to note that even with rigid robot manipulators a variety of errors/noise sources can creep in that cannot be resolved through accurate encoder measurements. This can be the result of: (a) calibration errors caused during the zeroing process, (b) errors in the hand-eye calibration, (c) differences in nominal and actual lengths of robot components, (d) changes to the camera pose due to physical forces exerted on the robot, (e) gearbox backlash and mechanical wear and tear, (f) the effects of temperature and payload weight on the mechanical structure of the robot. Often times small errors can compound throughout the kinematic chain and lead to positional errors in the centimeter range. In our experiment, we therefore chose to understand how the filtering approach can deal with noisy measurement inputs.
+
+therefore, only reading the joint angles from the robot is not enough for estimation the state, and the forward kinematics will be inaccuate due to the accumulation of the errors. 
 
 **C6:** ***"Since one of the main contributions of the proposed method is the attention gain, I’m interested to see how the proposed method works compared to a non-learning Kalman filter in cases where a traditional formulation is feasible. The Kalman gain is supposed to be the optimal gain under the Gaussian assumption and linear models. I wonder if the proposed attention gain can achieve similar optimal results when the problem is less complicated and well-constrained."***
 
-**A6:** We agree with the reviewer that this will be an informative comparison. We added one more experiment, presenting a comparison of the results obtained from a non-learning Extended Kalman Filter (EKF) and α-MDF on the KITTI Visual Odometry task in low dimensions. As shown in Sec. B.1.2, our proposed method outperforms EKF by large margins. We argue that α-MDF has the additional capability of learning noise profiles during the training process, thereby eliminating the need for manual tuning, as required by the EKF.
+**A6:** We agree with the reviewer that this will be an informative comparison. We added one more experiment, presenting a comparison of the results obtained from an (non-learning) Extended Kalman Filter (EKF) and α-MDF on the KITTI Visual Odometry task in low dimensions. As shown in Sec. B.1.2, our proposed method outperforms EKF by large margins. We argue that α-MDF has the additional capability of learning noise profiles during the training process, thereby eliminating the need for manual tuning, as required by the EKF.
 
 **C7:** ***"Just out of curiosity, how are the sensors disabled for the experiment shown in Figure 5 (b)? It looks like the sensors were disabled on the fly during continuous inferencing. Was it done by setting the specific input matrix/vector to zero?"***
 
